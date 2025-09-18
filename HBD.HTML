@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Happy Birthday 🎂</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --black: #0b0b0b;
+      --white: #ffffff;
+      --blue: #00aaff;
+      --blue-2: #0ea5e9;
+      --glass: rgba(255,255,255,0.06);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--black) 0%, #071018 100%);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 20px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card{
+      width:100%;
+      max-width:900px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius: var(--radius);
+      padding:28px;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.04);
+      position:relative;
+      z-index:2;
+      backdrop-filter: blur(6px);
+    }
+
+    .left{
+      padding:18px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .title{
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight:700;
+      letter-spacing: -0.02em;
+      color:var(--white);
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .desc{
+      color:rgba(255,255,255,0.75);
+      line-height:1.5;
+      font-size:15px;
+    }
+
+    .cta-row{
+      margin-top:10px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      padding:12px 18px;
+      font-weight:600;
+      border-radius:12px;
+      cursor:pointer;
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+
+    .btn-primary{
+      background: linear-gradient(90deg,var(--blue) 0%, var(--blue-2) 100%);
+      color:var(--black);
+      box-shadow: 0 6px 20px rgba(14,165,233,0.18);
+    }
+
+    .btn:active{ transform: translateY(2px) }
+
+    .right{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      position:relative;
+    }
+
+    .cake-wrap{
+      width:100%;
+      max-width:380px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      border: 1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+
+    .greeting{
+      font-weight:700;
+      font-size:20px;
+      color:var(--blue-2);
+    }
+
+    .cake-svg{
+      width:220px;
+      height:auto;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+    }
+
+    canvas.confetti-canvas{
+      position: absolute;
+      inset: 0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    @media (max-width:900px){
+      .card{ grid-template-columns: 1fr; padding:18px; }
+      .right{ order:-1; margin-bottom:6px; }
+      .cake-svg{ width:200px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <canvas class="confetti-canvas" id="confetti"></canvas>
+
+    <div class="card" role="main" aria-labelledby="mainTitle">
+      <div class="left">
+        <div class="top">
+          <div class="title" id="mainTitle">
+            <span>🎉 Happy Birthday!</span>
+            <div style="background:linear-gradient(90deg,var(--blue),var(--blue-2));height:10px;width:10px;border-radius:50%;box-shadow:0 6px 16px rgba(14,165,233,0.16)"></div>
+          </div>
+        </div>
+
+        <p class="desc">
+          สุขสันต์วันเกิดนะคั้บไอ้เด็กดื้อ สุขภาพแข็งแรง ดูแลตัวเองดีๆนะ กินข้าวให้ครบด้วยนะคั้บ🎈
+        </p>
+
+        <div class="cta-row">
+          <button class="btn btn-primary" id="blowBtn">จุดเทียน & ปล่อยคอนเฟ็ตติ</button>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="cake-wrap" id="cakeCard" role="img" aria-label="Birthday cake">
+          <div class="greeting">ขอให้มีความสุขมากๆนะ 🎂</div>
+
+          <!-- Inline SVG cake -->
+          <svg class="cake-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="icing" x1="0" x2="1">
+                <stop offset="0" stop-color="#00aaff"/>
+                <stop offset="1" stop-color="#0ea5e9"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="200" cy="350" rx="140" ry="18" fill="rgba(255,255,255,0.05)"/>
+            <rect x="80" y="180" width="240" height="120" rx="20" ry="20" fill="#111" stroke="rgba(255,255,255,0.03)" />
+            <path d="M80 200 Q120 160 200 180 Q280 200 320 190 L320 260 Q280 280 200 270 Q120 260 80 260 Z" fill="url(#icing)" opacity="0.95"/>
+            <g fill="#fff">
+              <circle cx="130" cy="230" r="6" opacity="0.85"/>
+              <circle cx="170" cy="240" r="5" opacity="0.9"/>
+              <circle cx="240" cy="235" r="6" opacity="0.85"/>
+              <circle cx="285" cy="245" r="5" opacity="0.9"/>
+            </g>
+            <g id="candles">
+              <rect x="150" y="140" width="10" height="40" rx="2" fill="#fff"/>
+              <rect x="150" y="140" width="10" height="30" rx="2" fill="#00aaff" opacity="0.9"/>
+              <rect x="185" y="120" width="10" height="60" rx="2" fill="#fff"/>
+              <rect x="185" y="120" width="10" height="48" rx="2" fill="#0ea5e9" opacity="0.9"/>
+              <rect x="220" y="140" width="10" height="40" rx="2" fill="#fff"/>
+              <rect x="220" y="140" width="10" height="30" rx="2" fill="#00aaff" opacity="0.9"/>
+            </g>
+            <g id="flames">
+              <path class="flame f1" d="M155 136 C156 128 164 128 165 136 C164 132 156 132 155 136 Z" fill="#ffd166" />
+              <path class="flame f2" d="M190 116 C191 106 199 106 200 116 C199 110 191 110 190 116 Z" fill="#ffd166" />
+              <path class="flame f3" d="M225 136 C226 128 234 128 235 136 C234 132 226 132 225 136 Z" fill="#ffd166" />
+            </g>
+          </svg>
+
+          <div style="font-size:13px;color:rgba(255,255,255,0.75)">คลิกปุ่มเพื่อจุดเทียนและปล่อยคอนเฟ็ตติ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const confettiCanvas = document.getElementById('confetti');
+    const ctx = confettiCanvas.getContext('2d');
+    function fitCanvas(){
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    fitCanvas();
+    window.addEventListener('resize', fitCanvas);
+
+    let confettiPieces = [];
+    function rand(min,max){ return Math.random()*(max-min)+min }
+    function createConfettiBurst(x, y, count=120){
+      for(let i=0;i<count;i++){
+        confettiPieces.push({
+          x: x + rand(-40,40),
+          y: y + rand(-20,20),
+          vx: rand(-6,6),
+          vy: rand(-10,-2),
+          size: rand(6,14),
+          rot: rand(0,360),
+          vr: rand(-8,8),
+          color: [ "#00aaff", "#0ea5e9", "#ffffff", "#fef08a", "#fbcfe8" ][Math.floor(rand(0,5))],
+          ttl: rand(60,140)
+        });
+      }
+    }
+    function updateAndDraw(){
+      ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+      for(let i = confettiPieces.length-1; i>=0; i--){
+        let p = confettiPieces[i];
+        p.vy += 0.35;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.ttl--;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+        ctx.restore();
+        if(p.y > confettiCanvas.height + 50 || p.ttl <= 0) confettiPieces.splice(i,1);
+      }
+      requestAnimationFrame(updateAndDraw);
+    }
+    updateAndDraw();
+
+    const flames = document.querySelectorAll('.flame');
+    function pulseFlames(on=true){
+      flames.forEach((f,i)=>{
+        if(on){
+          f.style.opacity = 1;
+          f.style.transformOrigin = "center";
+          f.style.animation = `flicker ${0.9 + i*0.12}s ease-in-out infinite`;
+        } else {
+          f.style.opacity = 0;
+          f.style.animation = 'none';
+        }
+      });
+    }
+    const styleSheet = document.createElement("style");
+    styleSheet.innerHTML = `
+      @keyframes flicker {
+        0% { transform: translateY(0) scale(1); opacity:1 }
+        50% { transform: translateY(-3px) scale(0.95); opacity:0.8 }
+        100% { transform: translateY(0) scale(1); opacity:1 }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+    pulseFlames(false);
+
+    const blowBtn = document.getElementById('blowBtn');
+    blowBtn.addEventListener('click', ()=>{
+      const rect = document.querySelector('.cake-svg').getBoundingClientRect();
+      createConfettiBurst(rect.left + rect.width * 0.5, rect.top + rect.height * 0.25, 180);
+      pulseFlames(true);
+      setTimeout(()=>pulseFlames(false), 6000);
+      blowBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-6px)'},{transform:'translateY(0)'}], {duration:600, easing:'ease-out'});
+    });
+  </script>
+</body>
+</html>

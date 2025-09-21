@@ -134,6 +134,55 @@
       filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
     }
 
+    /* ปรับบล็อกคำถามให้เด่นและไม่จาง */
+    .question-container {
+      display: none; /* ซ่อนบล็อกคำถามเริ่มต้น */
+      position: fixed; /* ใช้ fixed เพื่อให้อยู่กลางหน้าจอเสมอ */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.85);  /* ปรับความทึบของพื้นหลัง */
+      padding: 20px;
+      border-radius: 15px;
+      color: var(--white);
+      text-align: center;
+      width: 80%;
+      max-width: 350px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* เพิ่มเงาให้เด่นขึ้น */
+      z-index: 10; /* ทำให้บล็อกนี้อยู่เหนือเนื้อหาอื่นๆ */
+    }
+
+    .question {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--blue-2);
+      margin-bottom: 20px;
+    }
+
+    .answer-btn {
+      padding: 12px 18px;
+      font-size: 18px;
+      background-color: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .answer-btn:active {
+      transform: scale(0.98);
+    }
+
+    .expanded {
+      width: 200px; /* ขยายปุ่ม */
+      font-size: 22px;
+    }
+
+    .hidden {
+      display: none; /* ซ่อนปุ่ม "ไม่พร้อม" */
+    }
+
     canvas.confetti-canvas{
       position: absolute;
       inset: 0;
@@ -151,6 +200,12 @@
   </style>
 </head>
 <body>
+  <!-- เพิ่มเสียงพื้นหลัง -->
+  <video id="background-video" autoplay loop muted style="display:none;">
+  <source src="HBD.MP4" type="video/mp4">
+  Your browser does not support the video tag.
+  </video>
+
   <div class="wrap">
     <canvas class="confetti-canvas" id="confetti"></canvas>
 
@@ -164,11 +219,11 @@
         </div>
 
         <p class="desc">
-          สุขสันต์วันเกิดนะคั้บไอ้เด็กดื้อ สุขภาพแข็งแรง ดูแลตัวเองดีๆนะ กินข้าวให้ครบด้วยนะคั้บ🎈
+          สุขสันต์วันเกิดนะคั้บไอ้เด็กดื้อ สุขภาพแข็งแรง ดูแลตัวเองดีๆนะ กินข้าวให้ครบด้วยนะคั้บ เลิกขี้แงได้แล้วนะเด็กน้อย🎈
         </p>
 
         <div class="cta-row">
-          <button class="btn btn-primary" id="blowBtn">จุดเทียน & ปล่อยคอนเฟ็ตติ</button>
+          <button class="btn btn-primary" id="blowBtn">จุดเทียน</button>
         </div>
       </div>
 
@@ -176,7 +231,7 @@
         <div class="cake-wrap" id="cakeCard" role="img" aria-label="Birthday cake">
           <div class="greeting">ขอให้มีความสุขมากๆนะ 🎂</div>
 
-          <!-- Inline SVG cake -->
+          <!-- เค้กที่ปรับแล้ว -->
           <svg class="cake-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
               <linearGradient id="icing" x1="0" x2="1">
@@ -186,113 +241,40 @@
             </defs>
             <ellipse cx="200" cy="350" rx="140" ry="18" fill="rgba(255,255,255,0.05)"/>
             <rect x="80" y="180" width="240" height="120" rx="20" ry="20" fill="#111" stroke="rgba(255,255,255,0.03)" />
-            <path d="M80 200 Q120 160 200 180 Q280 200 320 190 L320 260 Q280 280 200 270 Q120 260 80 260 Z" fill="url(#icing)" opacity="0.95"/>
-            <g fill="#fff">
-              <circle cx="130" cy="230" r="6" opacity="0.85"/>
-              <circle cx="170" cy="240" r="5" opacity="0.9"/>
-              <circle cx="240" cy="235" r="6" opacity="0.85"/>
-              <circle cx="285" cy="245" r="5" opacity="0.9"/>
-            </g>
-            <g id="candles">
-              <rect x="150" y="140" width="10" height="40" rx="2" fill="#fff"/>
-              <rect x="150" y="140" width="10" height="30" rx="2" fill="#00aaff" opacity="0.9"/>
-              <rect x="185" y="120" width="10" height="60" rx="2" fill="#fff"/>
-              <rect x="185" y="120" width="10" height="48" rx="2" fill="#0ea5e9" opacity="0.9"/>
-              <rect x="220" y="140" width="10" height="40" rx="2" fill="#fff"/>
-              <rect x="220" y="140" width="10" height="30" rx="2" fill="#00aaff" opacity="0.9"/>
-            </g>
-            <g id="flames">
-              <path class="flame f1" d="M155 136 C156 128 164 128 165 136 C164 132 156 132 155 136 Z" fill="#ffd166" />
-              <path class="flame f2" d="M190 116 C191 106 199 106 200 116 C199 110 191 110 190 116 Z" fill="#ffd166" />
-              <path class="flame f3" d="M225 136 C226 128 234 128 235 136 C234 132 226 132 225 136 Z" fill="#ffd166" />
-            </g>
+            <path d="M80 200 Q120 160 200 180 Q280 200 320 190 Q280 170 120 160 Q80 200 Z" fill="url(#icing)" />
+            <circle cx="190" cy="140" r="14" fill="rgba(255,255,255,0.06)"/>
           </svg>
-
-          <div style="font-size:13px;color:rgba(255,255,255,0.75)">คลิกปุ่มเพื่อจุดเทียนและปล่อยคอนเฟ็ตติ</div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- ส่วนของการตั้งคำถาม -->
+  <div class="question-container" id="questionContainer">
+    <div class="question">เป็นแฟนกันมั้ยคะเด็กดื้อ</div>
+    <button class="answer-btn" id="answerBtnYes">ตกลง</button>
+    <button class="answer-btn" id="answerBtnNo">ไม่พร้อม</button>
+  </div>
+
   <script>
-    const confettiCanvas = document.getElementById('confetti');
-    const ctx = confettiCanvas.getContext('2d');
-    function fitCanvas(){
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
-    }
-    fitCanvas();
-    window.addEventListener('resize', fitCanvas);
+    const blowBtn = document.getElementById("blowBtn");
+    const questionContainer = document.getElementById("questionContainer");
+    const answerBtnYes = document.getElementById("answerBtnYes");
+    const answerBtnNo = document.getElementById("answerBtnNo");
 
-    let confettiPieces = [];
-    function rand(min,max){ return Math.random()*(max-min)+min }
-    function createConfettiBurst(x, y, count=120){
-      for(let i=0;i<count;i++){
-        confettiPieces.push({
-          x: x + rand(-40,40),
-          y: y + rand(-20,20),
-          vx: rand(-6,6),
-          vy: rand(-10,-2),
-          size: rand(6,14),
-          rot: rand(0,360),
-          vr: rand(-8,8),
-          color: [ "#00aaff", "#0ea5e9", "#ffffff", "#fef08a", "#fbcfe8" ][Math.floor(rand(0,5))],
-          ttl: rand(60,140)
-        });
-      }
-    }
-    function updateAndDraw(){
-      ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
-      for(let i = confettiPieces.length-1; i>=0; i--){
-        let p = confettiPieces[i];
-        p.vy += 0.35;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.ttl--;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot * Math.PI/180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
-        ctx.restore();
-        if(p.y > confettiCanvas.height + 50 || p.ttl <= 0) confettiPieces.splice(i,1);
-      }
-      requestAnimationFrame(updateAndDraw);
-    }
-    updateAndDraw();
+    blowBtn.addEventListener("click", () => {
+      questionContainer.style.display = "block"; // แสดงคำถาม
+    });
 
-    const flames = document.querySelectorAll('.flame');
-    function pulseFlames(on=true){
-      flames.forEach((f,i)=>{
-        if(on){
-          f.style.opacity = 1;
-          f.style.transformOrigin = "center";
-          f.style.animation = `flicker ${0.9 + i*0.12}s ease-in-out infinite`;
-        } else {
-          f.style.opacity = 0;
-          f.style.animation = 'none';
-        }
-      });
-    }
-    const styleSheet = document.createElement("style");
-    styleSheet.innerHTML = `
-      @keyframes flicker {
-        0% { transform: translateY(0) scale(1); opacity:1 }
-        50% { transform: translateY(-3px) scale(0.95); opacity:0.8 }
-        100% { transform: translateY(0) scale(1); opacity:1 }
-      }
-    `;
-    document.head.appendChild(styleSheet);
-    pulseFlames(false);
+    answerBtnYes.addEventListener("click", () => {
+      alert("รักเด็กดื้อนะคะ😘");
+      questionContainer.style.display = "none"; // ซ่อนคำถามหลังจากตอบ
+    });
 
-    const blowBtn = document.getElementById('blowBtn');
-    blowBtn.addEventListener('click', ()=>{
-      const rect = document.querySelector('.cake-svg').getBoundingClientRect();
-      createConfettiBurst(rect.left + rect.width * 0.5, rect.top + rect.height * 0.25, 180);
-      pulseFlames(true);
-      setTimeout(()=>pulseFlames(false), 6000);
-      blowBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-6px)'},{transform:'translateY(0)'}], {duration:600, easing:'ease-out'});
+    // เมื่อคลิกปุ่ม "ไม่พร้อม" จะขยายปุ่ม "ตกลง" และทำให้ "ไม่พร้อม" หายไป
+    answerBtnNo.addEventListener("click", () => {
+      answerBtnYes.classList.add("expanded"); // ขยายปุ่มตกลง
+      answerBtnNo.classList.add("hidden"); // ซ่อนปุ่ม "ไม่พร้อม"
     });
   </script>
 </body>
